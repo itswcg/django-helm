@@ -38,7 +38,3 @@ django-helm includes
 ```bash
 helm install -n qcard qcard ./django-helm --dry-run --debug
 ```
-
-### 抽象
-- [ ] 项目名
-- [ ] 

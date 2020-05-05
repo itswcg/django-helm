@@ -1,0 +1,31 @@
+{{- if .Values.collectstaticJob.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{.Release.Name}}-collectstatic
+  labels:
+    {{- include "django-helm.labels" . | nindent 4 }}
+    app.kubernetes.io/component: collectstatic-job
+spec:
+  template:
+    #    ttlSecondsAfterFinished: 60
+    spec:
+      {{- with .Values.djangoServer.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.djangoServer.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.djangoServer.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["python",  "manage.py", "collectstatic"]
+          envFrom:
+            - configMapRef:
+                name: {{.Release.Name}}-config
+      restartPolicy: Never
+  backoffLimit: 0
+  {{- end -}}
