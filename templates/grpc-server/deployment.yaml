@@ -1,16 +1,17 @@
+{{- if .Values.grpcServer.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{.Release.Name}}-django-server
+  name: {{.Release.Name}}-grpc-server
   labels:
     {{- include "django-helm.labels" . | nindent 4 }}
-    app.kubernetes.io/component: django-server
+    app.kubernetes.io/component: grpc-server
 spec:
-  replicas: {{ .Values.djangoServer.replicaCount }}
+  replicas: {{ .Values.grpcServer.replicaCount }}
   selector:
     matchLabels:
       {{- include "django-helm.labels" . | nindent 6 }}
-      app.kubernetes.io/component: django-server
+      app.kubernetes.io/component: grpc-server
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -20,18 +21,18 @@ spec:
     metadata:
       labels:
         {{- include "django-helm.labels" . | nindent 8 }}
-        app.kubernetes.io/component: django-server
+        app.kubernetes.io/component: grpc-server
     spec:
-      {{- with .Values.djangoServer.imagePullSecrets }}
+      {{- with .Values.grpcServer.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        {{- toYaml .Values.djangoServer.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.grpcServer.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.djangoServer.securityContext | nindent 12 }}
+            {{- toYaml .Values.grpcServer.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           readinessProbe:
@@ -46,29 +47,29 @@ spec:
               port: http
             failureThreshold: 1
             periodSeconds: 10
-          command: ["gunicorn", "--workers", "1", "--bind", ":8000",
-                    "--log-level", "INFO", "wyvern.wsgi"]
+          command: ["python", "manage.py", "grpcrunserver", "8001"]
           envFrom:
             - configMapRef:
                 name: {{.Release.Name}}-config
           env:
-            - name: aliyun_logs_{{.Release.Name}}-django-server
+            - name: aliyun_logs_{{.Release.Name}}-grpc-server
               value: stdout
           ports:
             - name: http
-              containerPort: 8000
+              containerPort: 8001
               protocol: TCP
           resources:
-            {{- toYaml .Values.djangoServer.resources | nindent 12 }}
+            {{- toYaml .Values.grpcServer.resources | nindent 12 }}
       {{- with .Values.djangoServer.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.djangoServer.affinity }}
+      {{- with .Values.grpcServer.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.djangoServer.tolerations }}
+      {{- with .Values.grpcServer.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+  {{- end }}

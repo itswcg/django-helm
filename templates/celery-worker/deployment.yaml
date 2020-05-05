@@ -39,7 +39,7 @@ spec:
           command: ["celery", "worker", "-A", "wyvern", "-l", "info", "-Q", "wyvern.celery.default"]
           envFrom:
             - configMapRef:
-                name: qcard-config
+                name: {{$.Release.Name}}-config
           env:
             - name: aliyun_logs_{{$.Release.Name}}-celery-work-{{.name}}
               value: stdout

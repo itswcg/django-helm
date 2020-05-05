@@ -108,7 +108,35 @@ celeryWorker:
       affinity: {}
 
 grpcServer:
-  enabled: false
+  enabled: true
+  replicaCount: 1
+
+  podSecurityContext: {}
+
+  securityContext: {}
+
+  service:
+    type: ClusterIP
+    port: 8001
+
+  hpa:
+    enabled: false
+
+  ingress:
+    enabled: false
+    annotations: {}
+    hosts:
+      - host: chart-example.local
+        paths: []
+    tls: []
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
 
 collectstaticJob:
   enabled: false
