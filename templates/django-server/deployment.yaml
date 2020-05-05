@@ -52,7 +52,7 @@ spec:
             - configMapRef:
                 name: qcard-config
           env:
-            - name: aliyun_logs_qcard-django-server
+            - name: aliyun_logs_{{.Release.Name}}-django-server
               value: stdout
           ports:
             - name: http

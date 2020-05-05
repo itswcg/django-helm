@@ -1,5 +1,5 @@
 image:
-  repository: registry-vpc.cn-shanghai.aliyuncs.com/daqinjia/qcard-common
+  repository: django
   tag: latest
   pullPolicy: Always
 
@@ -72,6 +72,18 @@ djangoServer:
 
 celeryBeat:
   enabled: false
+
+  podSecurityContext: {}
+
+  securityContext: {}
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
 
 celeryWorker:
   enabled: false

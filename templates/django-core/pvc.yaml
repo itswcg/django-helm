@@ -1,22 +1,21 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: qcard-nfs-pv
+  name: {{.Release.Name}}-nfs-pv
 spec:
   capacity:
     storage: 8Gi
   accessModes:
     - ReadWriteMany
   nfs:
-    server: 379a04bb07-rfc46.cn-shanghai.nas.aliyuncs.com
+    server: /
     path: /
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: qcard-nfs-pvc
-  namespace: qcard
+  name: {{.Release.Name}}-nfs-pvc
 spec:
   accessModes:
     - ReadWriteMany
