@@ -20,12 +20,12 @@ spec:
         {{- include "django-helm.labels" . | nindent 8 }}
         app.kubernetes.io/component: celery-beat
     spec:
-      {{- with .Values.djangoServer.imagePullSecrets }}
+      {{- with .Values.celeryBeat.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        {{- toYaml .Values.djangoServer.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.celeryBeat.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

@@ -1,0 +1,62 @@
+{{- if .Values.celeryWorker.enabled -}}
+  {{- range .Values.celeryWorker.queue -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{$.Release.Name}}-celery-work-{{.name}}
+  labels:
+    {{- include "django-helm.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{$.Release.Name}}-celery-work-{{.name}}
+spec:
+  replicas: {{ .replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "django-helm.labels" $ | nindent 6 }}
+      app.kubernetes.io/component: {{$.Release.Name}}-celery-work-{{.name}}
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        {{- include "django-helm.labels" $ | nindent 8 }}
+        app.kubernetes.io/component: {{$.Release.Name}}-celery-work-{{.name}}
+    spec:
+      {{- with .imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ $.Chart.Name }}
+          securityContext:
+            {{- toYaml .securityContext | nindent 12 }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          command: ["celery", "worker", "-A", "wyvern", "-l", "info", "-Q", "wyvern.celery.default"]
+          envFrom:
+            - configMapRef:
+                name: qcard-config
+          env:
+            - name: aliyun_logs_{{$.Release.Name}}-celery-work-{{.name}}
+              value: stdout
+          resources:
+            {{- toYaml .resources | nindent 12 }}
+      {{- with .nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{- end -}}
+  {{- end -}}

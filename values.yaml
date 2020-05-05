@@ -71,7 +71,7 @@ djangoServer:
   affinity: {}
 
 celeryBeat:
-  enabled: false
+  enabled: true
 
   podSecurityContext: {}
 
@@ -86,7 +86,26 @@ celeryBeat:
   affinity: {}
 
 celeryWorker:
-  enabled: false
+  enabled: true
+
+  queue:
+    - name: default
+      replicaCount: 1
+      podSecurityContext: {}
+      securityContext: {}
+      resources: {}
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+
+    - name: daily
+      replicaCount: 1
+      podSecurityContext: {}
+      securityContext: {}
+      resources: {}
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
 
 grpcServer:
   enabled: false
