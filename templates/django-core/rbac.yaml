@@ -1,6 +1,7 @@
 {{- if .Values.serviceAccount.create -}}
 apiVersion: v1
 kind: ServiceAccount
+serviceAccountName: {{ include "django-helm.serviceAccountName" . }}
 metadata:
   name: {{ include "django-helm.serviceAccountName" . }}
   labels:
@@ -9,4 +10,4 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-{{- end -}}
+  {{- end -}}

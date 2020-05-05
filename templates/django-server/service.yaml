@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Release.Name}}-django-server
+  labels:
+    {{- include "django-helm.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.djangoServer.service.type }}
+  ports:
+    - port: {{ .Values.djangoServer.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "django-helm.labels" . | nindent 4 }}
+    app.kubernetes.io/component: django-server
