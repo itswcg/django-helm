@@ -9,7 +9,7 @@ Note: The charts in this repository require Helm version 3.x or later.
 ### Add the Django Helm Chart repo
 In order to be able to use the charts in this repository, add the name and URL to your Helm client:
 ```bash
-helm repo add django https://github.com/itswcg/django-helm
+helm repo add django https://itswcg.github.io/django-helm/charts/
 helm repo update
 ```
 
