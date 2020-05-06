@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  django-helm:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2020-05-06T10:51:32.601715+08:00"
+    description: A Helm chart for Kubernetes
+    digest: 24dac378730aa839516379dc505227361e400cda9d24e44e5309721e8a695bb8
+    name: django-helm
+    type: application
+    urls:
+    - https://itswcg.github.io/django-helm/charts/django-helm-0.1.0.tgz
+    version: 0.1.0
+generated: "2020-05-06T10:51:32.600067+08:00"
