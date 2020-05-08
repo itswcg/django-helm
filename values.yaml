@@ -1,10 +1,17 @@
 image:
+  # image config
   repository: django
   tag: latest
   pullPolicy: Always
 
 configmap:
   data: {}
+
+rbac:
+  created: false
+
+pvc:
+  created: false
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -14,9 +21,6 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
-
-pvc:
-  created: false
 
 djangoServer:
   replicaCount: 1

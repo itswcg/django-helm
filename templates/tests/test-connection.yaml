@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "django-helm.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "django-helm.fullname" . }}:{{ .Values.djangoServer.service.port }}']
   restartPolicy: Never

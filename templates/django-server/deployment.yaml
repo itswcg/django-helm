@@ -21,6 +21,8 @@ spec:
       labels:
         {{- include "django-helm.labels" . | nindent 8 }}
         app.kubernetes.io/component: django-server
+      annotations:
+        checksum/config: {{include (print $.Template.BasePath "/django-core/configmap.yaml") . | sha256sum }}
     spec:
       {{- with .Values.djangoServer.imagePullSecrets }}
       imagePullSecrets:

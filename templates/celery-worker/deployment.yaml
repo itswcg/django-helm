@@ -23,6 +23,8 @@ spec:
       labels:
         {{- include "django-helm.labels" $ | nindent 8 }}
         app.kubernetes.io/component: {{$.Release.Name}}-celery-work-{{.name}}
+      annotations:
+        checksum/config: {{include (print $.Template.BasePath "/django-core/configmap.yaml") $ | sha256sum }}
     spec:
       {{- with .imagePullSecrets }}
       imagePullSecrets:
