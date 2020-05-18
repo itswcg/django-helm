@@ -114,7 +114,7 @@ celeryWorker:
 celerFlower:
   enabled: true
 
-  command: ["celery", "flower", "-A", "config.celery_app"]
+  command: ["celery", "flower", "-A", "config.celery_app", "--address=0.0.0.0", "--port=5555"]
 
   service:
     type: ClusterIP

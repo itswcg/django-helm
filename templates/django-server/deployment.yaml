@@ -39,13 +39,13 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: django
             initialDelaySeconds: 15
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /
-              port: http
+              port: django
             failureThreshold: 1
             periodSeconds: 10
           {{- with .Values.djangoServer.command }}
