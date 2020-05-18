@@ -15,7 +15,7 @@ helm repo update
 
 ### Install charts
 ```bash
-helm install my-release django/django
+helm install my-release django/django -f values.yaml
 ```
 
 ### Configuration
@@ -23,18 +23,16 @@ django-helm includes
 
 * django-server
 * django-config
-* django-rbac
 * django-volumes
 * django-celery-beat
 * django-celery-work
+* django-celery-flower
 * django-grpc-server
 * django-migrate-job
 * django-collectstatic-job
 * django-log
-* django-metric
-* django-notify
 
-### debug
-```bash
-helm install -n qcard qcard ./django-helm --dry-run --debug
-```
+see [values.yaml](https://github.com/itswcg/django-helm/blob/master/values.yaml)
+
+### For production
+Integrated alicloud hpa, sls.

@@ -100,6 +100,7 @@ celeryWorker:
   enabled: true
 
   queue:
+    # This is a list that supports multiple queues
     - name: celery
       replicaCount: 1
       command: ["celery", "worker", "-A", "config.celery_app", "-l", "info", "-Q", "celery"]
@@ -176,4 +177,4 @@ collectstaticJob:
   enabled: false
 
 migrateJob:
-  enabled: false
+  enabled: true
