@@ -1,16 +1,17 @@
+{{- if .Values.celerFlower.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{.Release.Name}}-django-server
+  name: {{.Release.Name}}-celery-flower
   labels:
     {{- include "django-helm.labels" . | nindent 4 }}
-    app.kubernetes.io/component: django-server
+    app.kubernetes.io/component: celery-flower
 spec:
-  replicas: {{ .Values.djangoServer.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "django-helm.labels" . | nindent 6 }}
-      app.kubernetes.io/component: django-server
+      app.kubernetes.io/component: celery-flower
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -20,35 +21,23 @@ spec:
     metadata:
       labels:
         {{- include "django-helm.labels" . | nindent 8 }}
-        app.kubernetes.io/component: django-server
+        app.kubernetes.io/component: celery-flower
       annotations:
         checksum/config: {{include (print $.Template.BasePath "/django-core/configmap.yaml") . | sha256sum }}
     spec:
-      {{- with .Values.djangoServer.imagePullSecrets }}
+      {{- with .Values.celeryBeat.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        {{- toYaml .Values.djangoServer.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.celeryBeat.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.djangoServer.securityContext | nindent 12 }}
+            {{- toYaml .Values.celeryBeat.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 15
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-            failureThreshold: 1
-            periodSeconds: 10
-          {{- with .Values.djangoServer.command }}
+          {{- with .Values.celerFlower.command }}
           command:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -56,23 +45,24 @@ spec:
             - configMapRef:
                 name: {{.Release.Name}}-config
           env:
-            - name: aliyun_logs_{{.Release.Name}}-django-server
+            - name: aliyun_logs_{{.Release.Name}}-celery-flower
               value: stdout
           ports:
-            - name: django
-              containerPort: 8000
+            - name: flower
+              containerPort: {{ .Values.celerFlower.service.port }}
               protocol: TCP
           resources:
-            {{- toYaml .Values.djangoServer.resources | nindent 12 }}
-      {{- with .Values.djangoServer.nodeSelector }}
+            {{- toYaml .Values.celerFlower.resources | nindent 12 }}
+      {{- with .Values.celerFlower.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.djangoServer.affinity }}
+      {{- with .Values.celerFlower.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.djangoServer.tolerations }}
+      {{- with .Values.celerFlower.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+  {{- end -}}

@@ -9,9 +9,9 @@ spec:
   type: {{ .Values.grpcServer.service.type }}
   ports:
     - port: {{ .Values.grpcServer.service.port }}
-      targetPort: http
+      targetPort: grpc
       protocol: TCP
-      name: http
+      name: grpc
   selector:
     {{- include "django-helm.labels" . | nindent 4 }}
     app.kubernetes.io/component: grpc-server

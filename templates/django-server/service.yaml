@@ -8,9 +8,9 @@ spec:
   type: {{ .Values.djangoServer.service.type }}
   ports:
     - port: {{ .Values.djangoServer.service.port }}
-      targetPort: http
+      targetPort: django
       protocol: TCP
-      name: http
+      name: django
   selector:
     {{- include "django-helm.labels" . | nindent 4 }}
     app.kubernetes.io/component: django-server

@@ -38,7 +38,10 @@ spec:
             {{- toYaml .securityContext | nindent 12 }}
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
-          command: ["celery", "worker", "-A", "wyvern", "-l", "info", "-Q", "wyvern.celery.default"]
+          {{- with .command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{$.Release.Name}}-config

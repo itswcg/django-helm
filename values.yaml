@@ -1,14 +1,16 @@
 image:
   # image config
-  repository: django
+  repository: itswcg/django-helm-application
   tag: latest
   pullPolicy: Always
 
 configmap:
-  data: {}
-
-rbac:
-  created: false
+  # django environment
+  data:
+    DJANGO_SETTINGS_MODULE: config.settings.production
+    DATABASE_URL:
+    REDIS_URL:
+    CELERY_BROKER_URL:
 
 pvc:
   created: false
@@ -24,6 +26,9 @@ serviceAccount:
 
 djangoServer:
   replicaCount: 1
+
+  command: ["gunicorn", "--workers", "1", "--bind", ":8000",
+            "--log-level", "INFO", "config.wsgi"]
 
   podSecurityContext: {}
   # fsGroup: 2000
@@ -77,6 +82,8 @@ djangoServer:
 celeryBeat:
   enabled: true
 
+  command: ["celery", "beat", "-A", "config.celery_app", "-l", "info"]
+
   podSecurityContext: {}
 
   securityContext: {}
@@ -93,8 +100,9 @@ celeryWorker:
   enabled: true
 
   queue:
-    - name: default
+    - name: celery
       replicaCount: 1
+      command: ["celery", "worker", "-A", "config.celery_app", "-l", "info", "-Q", "celery"]
       podSecurityContext: {}
       securityContext: {}
       resources: {}
@@ -102,18 +110,40 @@ celeryWorker:
       tolerations: []
       affinity: {}
 
-    - name: daily
-      replicaCount: 1
-      podSecurityContext: {}
-      securityContext: {}
-      resources: {}
-      nodeSelector: {}
-      tolerations: []
-      affinity: {}
+celerFlower:
+  enabled: true
+
+  command: ["celery", "flower", "-A", "config.celery_app"]
+
+  service:
+    type: ClusterIP
+    port: 5555
+
+  ingress:
+    enabled: false
+    annotations: {}
+    hosts:
+      - host: chart-example.local
+        paths: []
+    tls: []
+
+  podSecurityContext: {}
+
+  securityContext: {}
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
 
 grpcServer:
-  enabled: true
+  enabled: false
   replicaCount: 1
+
+  command: ["python", "manage.py", "grpcrunserver", "8001"]
 
   podSecurityContext: {}
 
@@ -146,7 +176,4 @@ collectstaticJob:
   enabled: false
 
 migrateJob:
-  enabled: false
-
-metrics:
   enabled: false

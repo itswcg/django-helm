@@ -34,7 +34,10 @@ spec:
             {{- toYaml .Values.celeryBeat.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["celery", "beat", "-A", "wyvern", "-l", "info"]
+          {{- with .Values.celeryBeat.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{.Release.Name}}-config

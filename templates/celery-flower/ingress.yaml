@@ -1,6 +1,6 @@
-{{- if .Values.djangoServer.ingress.enabled -}}
+{{- if .Values.celerFlower.ingress.enabled -}}
 {{- $fullName := include "django-helm.fullname" . -}}
-{{- $svcPort := .Values.djangoServer.service.port -}}
+{{- $svcPort := .Values.celerFlower.service.port -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1beta1
 {{- else -}}
@@ -8,15 +8,15 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{.Release.Name}}-django-server
+  name: {{.Release.Name}}-celery-flower
   labels:
     {{- include "django-helm.labels" . | nindent 4 }}
-  {{- with .Values.djangoServer.ingress.annotations }}
+  {{- with .Values.celerFlower.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-{{- if .Values.djangoServer.ingress.tls }}
+{{- if .Values.celerFlower.ingress.tls }}
   tls:
   {{- range .Values.ingress.tls }}
     - hosts:
@@ -27,7 +27,7 @@ spec:
   {{- end }}
 {{- end }}
   rules:
-  {{- range .Values.djangoServer.ingress.hosts }}
+  {{- range .Values.celerFlower.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:

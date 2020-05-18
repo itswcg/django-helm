@@ -49,7 +49,10 @@ spec:
               port: http
             failureThreshold: 1
             periodSeconds: 10
-          command: ["python", "manage.py", "grpcrunserver", "8001"]
+          {{- with .Values.grpcServer.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{.Release.Name}}-config
@@ -57,7 +60,7 @@ spec:
             - name: aliyun_logs_{{.Release.Name}}-grpc-server
               value: stdout
           ports:
-            - name: http
+            - name: grpc
               containerPort: 8001
               protocol: TCP
           resources:

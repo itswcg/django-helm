@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Release.Name}}-celery-flower
+  labels:
+    {{- include "django-helm.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.celerFlower.service.type }}
+  ports:
+    - port: {{ .Values.celerFlower.service.port }}
+      targetPort: flower
+      protocol: TCP
+      name: flower
+  selector:
+    {{- include "django-helm.labels" . | nindent 4 }}
+    app.kubernetes.io/component: celery-flower

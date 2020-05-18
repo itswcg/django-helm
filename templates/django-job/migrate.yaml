@@ -22,7 +22,7 @@ spec:
             {{- toYaml .Values.djangoServer.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["python",  "manage.py", "makemigrations", "qcard", "--settings=$(DJANGO_SETTINGS_MODULE)"]
+          command: ["python",  "manage.py", "migrate", "--settings=$(DJANGO_SETTINGS_MODULE)"]
           envFrom:
             - configMapRef:
                 name: {{.Release.Name}}-config
