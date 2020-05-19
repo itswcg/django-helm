@@ -22,7 +22,7 @@ spec:
       annotations:
         checksum/config: {{include (print $.Template.BasePath "/django-core/configmap.yaml") . | sha256sum }}
     spec:
-      {{- with .Values.celeryBeat.imagePullSecrets }}
+      {{- with .Values.image.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
