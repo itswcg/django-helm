@@ -15,6 +15,7 @@ configmap:
 
 pvc:
   created: false
+  storageClassName:
 
 serviceAccount:
   # Specifies whether a service account should be created
