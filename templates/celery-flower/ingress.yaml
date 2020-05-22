@@ -18,7 +18,7 @@ metadata:
 spec:
 {{- if .Values.celerFlower.ingress.tls }}
   tls:
-  {{- range .Values.ingress.tls }}
+  {{- range .Values.celerFlower.ingress.tls }}
     - hosts:
       {{- range .hosts }}
         - {{ . | quote }}
