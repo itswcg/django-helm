@@ -18,7 +18,7 @@ metadata:
 spec:
 {{- if .Values.djangoServer.ingress.tls }}
   tls:
-  {{- range .Values.ingress.tls }}
+  {{- range .Values.djangoServer.ingress.tls }}
     - hosts:
       {{- range .hosts }}
         - {{ . | quote }}
@@ -34,7 +34,7 @@ spec:
         {{- range .paths }}
           - path: {{ . }}
             backend:
-              serviceName: {{ $fullName }}
+              serviceName: {{ $fullName }}-server
               servicePort: {{ $svcPort }}
         {{- end }}
   {{- end }}
